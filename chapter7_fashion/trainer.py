@@ -84,26 +84,31 @@ class my_NN01:
 		
 		# 순전파. y값을 계산하고 W1,W2,B1,B2 보정치를 계산한 후 그 보정치를 반환하는 함수를 편미분한다.
 		# W1에 대해 편미분한다
-		print('W1 편미분 전: ', self.W1)
-		print('w1 편미분 차감값:',self.learning_rate * self.feed_forward_partial_W1())
-		self.W1 -= self.learning_rate * self.feed_forward_partial_W1()
-		print('W1 편미분 후: ', self.W1)
+		print('W1 편미분 전: ', self.W1[0][0])
+
+		w1_decrease_amount = self.learning_rate * self.feed_forward_partial_W1() / 100
+		print('w1 편미분 차감값:',w1_decrease_amount)
+		self.W1 -= w1_decrease_amount
+
 		# B1에 대해 편미분한다
-		print('B1 편미분 전: ', self.B1)
+		print('B1 편미분 전: ', self.B1[0])
 		print('B1 편미분 차감값: ', self.learning_rate * self.feed_forward_partial_B1())
 		self.B1 -= self.learning_rate * self.feed_forward_partial_B1()
-		print('B1 편미분 후: ', self.B1)
+
 		# W2에 대해 편미분한다
-		print('W2 편미분 전: ', self.W2)
-		print('W2 편미분 차감값: ', self.learning_rate * self.feed_forward_partial_W2())
-		self.W2 -= self.learning_rate * self.feed_forward_partial_W2()
-		print('W2 편미분 후: ', self.W2)
+		print('W2 편미분 전: ', self.W2[0][0])
+		w2_decrease_amount = self.learning_rate * self.feed_forward_partial_W2() / 100
+		print('W2 편미분 차감값: ', w2_decrease_amount)
+
+		# W2 편미분 차감값이 커서, 1000을 추가로 나누어 더 작은 값을 차감하도록 하였다.
+		self.W2 -= w2_decrease_amount
+
 
 		# B2에 대해 편미분한다
-		print('B2 편미분 전: ', self.B2)
+		print('B2 편미분 전: ', self.B2[0])
 		print('B2 편미분 차감값: ',self.learning_rate * self.feed_forward_partial_B2())
 		self.B2 -= self.learning_rate * self.feed_forward_partial_B2()
-		print('B2 편미분 후: ',self.B2)
+
 
 	def predict(self, input_data):
 		A1 = np.dot(self.input_data, self.W1) + self.B1
@@ -124,6 +129,10 @@ class my_NN01:
 			data = (test_data[index, 1:] / 255.0 * 0.99) + 0.01
 			# predict 데이터는 2차원 벡터 형태로 연산하므로, 1차원 데이터인 data를 2차원으로 변환한다.
 			predicted_num = self.predict(np.array(data, ndmin = 2))
+
+			# 예상한 숫자 결과를 샘플링해서 춫력한다.
+			if index % 1000 == 0:
+				print('예상한 숫자: ',predicted_num)
 
 			if label == predicted_num:
 				matched_list.append(index)
