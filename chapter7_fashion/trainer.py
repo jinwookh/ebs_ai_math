@@ -35,33 +35,93 @@ class my_NN01:
 		Z1 = activation.Sigmoid(A1)
 		A2 = np.dot(Z1, W2) + B2
 		y = activation.Sigmoid(A2)
-
 		# 로그 최대 우도 추정법을 사용한다.
-		return -np.sum(self.target_data*np.log(y+delta) + (1-self.target_data)*np.log((1-y) + delta))
+		result = -np.sum(self.target_data * np.log(y + delta) + (1 - self.target_data) * np.log((1 - y) + delta))
+
+		return result
 
 	def feed_forward_partial_W1(self):
 		h = 1e-7
+		w1_partial = np.zeros(shape=(len(self.W1), len(self.W1[0])))
+		for i in range(len(self.W1)):
+			for j in range(len(self.W1[i])):
+				modifiedPlusW1 = self.W1.copy()
+				modifiedPlusW1[i][j] += modifiedPlusW1[i][j] + h
 
-		upper_part = (self.feed_forward(self.W1+h, self.W2, self.B1, self.B2) - self.feed_forward(self.W1-h, self.W2, self.B1, self.B2))
-		return upper_part / (2*h)
+				modifiedMinusW1 = self.W1.copy()
+				modifiedMinusW1[i][j] += modifiedMinusW1[i][j] - h
+
+				upper_part = (self.feed_forward(modifiedPlusW1, self.W2, self.B1, self.B2) - self.feed_forward(modifiedMinusW1,
+																											self.W2,
+																											self.B1,
+																											self.B2))
+				partial_element = upper_part / (2*h)
+				w1_partial[i][j] = partial_element
+
+		return w1_partial
 
 	def feed_forward_partial_W2(self):
 		h = 1e-3
 
-		upper_part = (self.feed_forward(self.W1, self.W2+h, self.B1, self.B2) - self.feed_forward(self.W1, self.W2-h, self.B1, self.B2))
-		return upper_part / (2*h)
+		w2_partial = np.zeros(shape=(len(self.W2), len(self.W2[0])))
+		for i in range(len(self.W2)):
+			for j in range(len(self.W2[i])):
+				modifiedPlusW2 = self.W2.copy()
+				modifiedPlusW2[i][j] += modifiedPlusW2[i][j] + h
+
+				modifiedMinusW2 = self.W2.copy()
+				modifiedMinusW2[i][j] += modifiedMinusW2[i][j] - h
+
+				upper_part = (self.feed_forward(self.W1, modifiedPlusW2, self.B1, self.B2) - self.feed_forward(
+					self.W1,
+					modifiedMinusW2,
+					self.B1,
+					self.B2))
+				partial_element = upper_part / (2 * h)
+				w2_partial[i][j] = partial_element
+
+		return w2_partial
 
 	def feed_forward_partial_B1(self):
 		h = 1e-7
+		b1_partial = np.zeros(shape=(len(self.B1)))
+		for i in range(len(self.B1)):
+			modifiedPlusB1 = self.B1.copy()
+			modifiedPlusB1[i] += modifiedPlusB1[i] + h
 
-		upper_part = (self.feed_forward(self.W1, self.W2, self.B1+h, self.B2) - self.feed_forward(self.W1, self.W2, self.B1-h, self.B2))
-		return upper_part / (2*h)
+			modifiedMinusB1 = self.B1.copy()
+			modifiedMinusB1[i] += modifiedMinusB1[i] - h
+
+			upper_part = (self.feed_forward(self.W1, self.W2, modifiedPlusB1, self.B2) - self.feed_forward(
+				self.W1,
+				self.W2,
+				modifiedMinusB1,
+				self.B2))
+			partial_element = upper_part / (2 * h)
+			b1_partial[i] = partial_element
+
+		return b1_partial
 
 	def feed_forward_partial_B2(self):
 		h = 1e-7
 
-		upper_part = (self.feed_forward(self.W1, self.W2, self.B1, self.B2+h) - self.feed_forward(self.W1, self.W2, self.B1, self.B2-h))
-		return upper_part / (2*h)
+		b2_partial = np.zeros(shape=(len(self.B2)))
+		for i in range(len(self.B2)):
+			modifiedPlusB2 = self.B2.copy()
+			modifiedPlusB2[i] += modifiedPlusB2[i] + h
+
+			modifiedMinusB2 = self.B2.copy()
+			modifiedMinusB2[i] += modifiedMinusB2[i] - h
+
+			upper_part = (self.feed_forward(self.W1, self.W2, self.B1, modifiedPlusB2) - self.feed_forward(
+				self.W1,
+				self.W2,
+				self.B1,
+				modifiedMinusB2))
+			partial_element = upper_part / (2 * h)
+			b2_partial[i] = partial_element
+
+		return b2_partial
 	
 
 

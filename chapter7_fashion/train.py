@@ -9,7 +9,7 @@ data_train = np.array(df_train, dtype = np.float32)
 data_test = np.array(df_test, dtype = np.float32)
 
 # input nodes, hidden nodes, output nodes, learning rate
-my_model = trainer.my_NN01(784, 100,10,0.01)
+my_model = trainer.my_NN01(784, 10,10,0.05)
 
 # len(data_train)=60000개
 for step in range(len(data_train)):
@@ -24,7 +24,7 @@ for step in range(len(data_train)):
     my_model.train(input_data, target_data)
 
     print(step, '번째 훈련 중.. 비용은 ', my_model.cost())
-    if step % 1000 == 200 :
+    if step % 100 == 0 :
         my_model.accuracy(data_test)
 
 
