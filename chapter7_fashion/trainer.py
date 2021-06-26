@@ -46,7 +46,7 @@ class my_NN01:
 		return upper_part / (2*h)
 
 	def feed_forward_partial_W2(self):
-		h = 1e-7
+		h = 1e-3
 
 		upper_part = (self.feed_forward(self.W1, self.W2+h, self.B1, self.B2) - self.feed_forward(self.W1, self.W2-h, self.B1, self.B2))
 		return upper_part / (2*h)
@@ -86,9 +86,9 @@ class my_NN01:
 		# W1에 대해 편미분한다
 		print('W1 편미분 전: ', self.W1[0][0])
 
-		w1_decrease_amount = self.learning_rate * self.feed_forward_partial_W1() / 100
+		w1_decrease_amount = self.learning_rate * self.feed_forward_partial_W1()
 		print('w1 편미분 차감값:',w1_decrease_amount)
-		self.W1 -= w1_decrease_amount
+		self.W1 -= w1_decrease_amount / 100
 
 		# B1에 대해 편미분한다
 		print('B1 편미분 전: ', self.B1[0])
@@ -97,11 +97,14 @@ class my_NN01:
 
 		# W2에 대해 편미분한다
 		print('W2 편미분 전: ', self.W2[0][0])
-		w2_decrease_amount = self.learning_rate * self.feed_forward_partial_W2() / 100
+		w2_decrease_amount = self.learning_rate * self.feed_forward_partial_W2()
 		print('W2 편미분 차감값: ', w2_decrease_amount)
 
 		# W2 편미분 차감값이 커서, 1000을 추가로 나누어 더 작은 값을 차감하도록 하였다.
-		self.W2 -= w2_decrease_amount
+		# 1000을 나누지 않으면 대개 -8만큼 감소한다.
+		# -8만큼 W2가 감소하면 후에 -8 *100=-800이 인자로 sigmoid 함수로 넘어가게 되어 overflow가 나타난다.
+		# 결국 편미분값 적용 전후의 sigmoid 결과값의 차이가 w2 감소량을 결정하므로, sigmoid 결과값이 0.0으로 수렴하는 일은 없어야 한다.
+		self.W2 -= w2_decrease_amount / 100
 
 
 		# B2에 대해 편미분한다
@@ -111,7 +114,7 @@ class my_NN01:
 
 
 	def predict(self, input_data):
-		A1 = np.dot(self.input_data, self.W1) + self.B1
+		A1 = np.dot(input_data, self.W1) + self.B1
 		Z1 = activation.Sigmoid(A1)
 		A2 = np.dot(Z1, self.W2) + self.B2
 		y = activation.Sigmoid(A2)

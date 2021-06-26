@@ -24,7 +24,7 @@ for step in range(len(data_train)):
     my_model.train(input_data, target_data)
 
     print(step, '번째 훈련 중.. 비용은 ', my_model.cost())
-    if step % 1000 == 0 :
+    if step % 1000 == 200 :
         my_model.accuracy(data_test)
 
 
