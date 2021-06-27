@@ -1,6 +1,12 @@
+from datetime import datetime
 import pandas as pd
 import numpy as np
 import trainer
+
+
+datetimenow = str(datetime.now())
+f = open("train_result/"+datetimenow+".txt", "w")
+
 
 df_train = pd.read_csv('data/fashion-mnist_train.csv')
 df_test = pd.read_csv('data/fashion-mnist_test.csv')
@@ -9,7 +15,7 @@ data_train = np.array(df_train, dtype = np.float32)
 data_test = np.array(df_test, dtype = np.float32)
 
 # input nodes, hidden nodes, output nodes, learning rate
-my_model = trainer.my_NN01(784, 10,10,0.05)
+my_model = trainer.my_NN01(784,40,10,0.05)
 
 # len(data_train)=60000개
 for step in range(len(data_train)):
@@ -25,7 +31,12 @@ for step in range(len(data_train)):
 
     print(step, '번째 훈련 중.. 비용은 ', my_model.cost())
     if step % 100 == 0 :
-        my_model.accuracy(data_test)
+        accurate_rate = my_model.accuracy(data_test)
+        f.write('{0} 번째 훈련 중... 정확도: {1}%'.format(step, accurate_rate))
+        f.write('\n')
 
 
-my_model.accuracy(data_test)
+accurate_rate = my_model.accuracy(data_test)
+f.write('최종 정확도: {1}%'.format(accurate_rate))
+f.write('\n')
+f.close()

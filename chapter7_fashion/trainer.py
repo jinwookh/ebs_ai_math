@@ -202,8 +202,9 @@ class my_NN01:
 			else:
 				not_matched_list.append(index)
 
-		print('정확도: ', 100 *(len(matched_list) / len(test_data)), '%')
-		return matched_list, not_matched_list
+		accurate_rate = 100 *(len(matched_list) / len(test_data))
+		print('정확도: ', accurate_rate, '%')
+		return accurate_rate
 
 
 
