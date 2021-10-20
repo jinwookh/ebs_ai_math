@@ -41,7 +41,12 @@ class my_NN01:
 		result = -np.sum(self.target_data * np.log(y + delta) + (1 - self.target_data) * np.log((1 - y) + delta))
 
 		return result
-
+	"""
+	실제적인 성능 병목은 이 곳 W1 편미분 계산하는 곳에서 이뤄진다.
+	feed_forward_partial_W2보다 느린데, 그 이유는 feed_forward_partial_W1이 더 많은 루프를 돌기 때문이다.
+	ex) input 784, 은닉 노드 40, output 10개 일 때
+	feed_forward_partial_W1는 784*40, feed_forward_partial_W2는 40*10 번 루프를 돈다.
+	"""
 	def feed_forward_partial_W1(self):
 		h = 1e-7
 		w1_partial = np.zeros(shape=(len(self.W1), len(self.W1[0])))
