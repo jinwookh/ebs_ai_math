@@ -16,7 +16,7 @@ data_train = np.array(df_train, dtype = np.float32)
 data_test = np.array(df_test, dtype = np.float32)
 
 # input nodes, hidden nodes, output nodes, learning rate
-my_model = trainer.my_NN01(784,40,10,0.05)
+my_model = trainer.my_NN01(784,70,10,0.05)
 
 # len(data_train)=60000개
 for step in range(len(data_train)):
@@ -42,5 +42,14 @@ for step in range(len(data_train)):
 
 accurate_rate = my_model.accuracy(data_test)
 f.write('최종 정확도: {1}%'.format(accurate_rate))
-f.write('\n')
+f.write('\n\n\n\n\n\n')
+f.write('최종 결과\n')
+f.write('W1: \n')
+f.write(my_model.W1.tostring())
+f.write('B1: \n')
+f.write(my_model.B1.tostring())
+f.write('W2: \n')
+f.write(my_model.W2.tostring())
+f.write('B2: \n')
+f.write(my_model.B2.tostring())
 f.close()
