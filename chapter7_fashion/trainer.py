@@ -1,5 +1,6 @@
 import numpy as np
 import activation
+import feed_forward_utils
 
 class my_NN01:
 	def __init__(self, input_nodes, hidden_nodes, output_nodes, learning_rate):
@@ -12,6 +13,7 @@ class my_NN01:
 		# W1, B1, W2, B2에는 numpy.ndarray 자료형이 들어간다.
 		# W1, W2는 수렴값을 빠르게 찾기 위해 입력층의 노드 수의 절반의 제곱근으로 나눈다.
 		self.W1 = np.random.rand(self.input_nodes, self.hidden_nodes) / np.sqrt(self.input_nodes/2)
+		self.W1 = np.float32(self.W1)
 		self.B1 = np.random.rand(self.hidden_nodes)
 
 		self.W2 = np.random.rand(self.hidden_nodes, self.output_nodes) / np.sqrt(self.hidden_nodes/2)
@@ -146,7 +148,7 @@ class my_NN01:
 		# W1에 대해 편미분한다
 		print('W1 편미분 전: ', self.W1[0][0])
 
-		w1_decrease_amount = self.learning_rate * self.feed_forward_partial_W1()
+		w1_decrease_amount = self.learning_rate * feed_forward_utils.feed_forward_partial_W1(input_data, target_data, self.W1, self.W2, self.B1, self.B2)
 		print('w1 편미분 차감값:',w1_decrease_amount)
 		self.W1 -= w1_decrease_amount / 100
 

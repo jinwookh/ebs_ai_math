@@ -2,6 +2,7 @@ from datetime import datetime
 import pandas as pd
 import numpy as np
 import trainer
+import time
 
 
 datetimenow = str(datetime.now())
@@ -26,10 +27,12 @@ for step in range(len(data_train)):
     target_data = np.zeros(10) + 0.01
     # 정답에 해당되는 출력 변수는 0.99로 설정한다.
     target_data[int(data_train[step,0])] = 0.99
-
+    start_time = time.time();
     my_model.train(input_data, target_data)
+    end_time = time.time();
 
     print(step, '번째 훈련 중.. 비용은 ', my_model.cost())
+    print('걸린 시간: ', end_time-start_time, "초")
     if step % 100 == 0 :
         accurate_rate = my_model.accuracy(data_test)
         f.write('{0} 번째 훈련 중... 정확도: {1}%'.format(step, accurate_rate))
