@@ -22,6 +22,7 @@ my_model = trainer.my_NN01(784,40,10,0.05)
 for step in range(len(data_train)):
     # 원-핫-인코딩 형태로 정규화한다.
     input_data = ((data_train[step, 1:]/255.0)*0.99) + 0.01
+    input_data = np.float64(input_data)
 
     # 출력 변수를 은닉층 개수인 10개만큼 생성하고 0.01로 초기화한다
     target_data = np.zeros(10) + 0.01
