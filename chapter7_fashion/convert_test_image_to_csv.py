@@ -22,7 +22,9 @@ gray_nps = []
 for image in images:
 	resized = image.resize((28,28))
 	resized_array = np.asarray(resized)
-	gray = resized_array[:,:,0] * r + resized_array[:,:,1] *g + resized_array[:,:,2] * b	
+	gray = resized_array[:,:,0] * r + resized_array[:,:,1] *g + resized_array[:,:,2] * b
+	gray = 255 - gray
+	Image.fromarray(gray).show()
 	gray = gray.reshape(1,784)
 	gray = gray.astype(np.uint8)
 	gray_nps.append(gray)
@@ -32,5 +34,5 @@ csv_store_file_path = "data/jinwookh_test.csv"
 os.remove(csv_store_file_path)
 
 for gray_np in gray_nps:
-	pd.DataFrame(gray_np).to_csv(csv_store_file_path, mode="a")
+	pd.DataFrame(gray_np).to_csv(csv_store_file_path, mode="a", header=False)
 
